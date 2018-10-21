@@ -1,0 +1,73 @@
+:host {
+
+  .name {
+    display: flex;
+    flex: 1;
+    padding-right: 10px;
+  }
+
+  .message {
+    display: none;
+    color: #D93025;
+    font-size: smaller;
+    padding-right: 10px;
+  }
+
+  .icon {
+    margin-right: 10px;
+  }
+
+  .mat-dialog-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .title {
+      display: flex;
+      flex: 1;
+    }
+  }
+
+  .file {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    min-height: 40px;
+
+    .cancel {
+      display: none;
+      color: inherit;
+    }
+
+    &:hover {
+      &.error,
+      &.cancelled {
+        .message {
+          display: flex;
+          flex: 1;
+        }
+        .icon, .name {
+          display: none;
+        }
+      }
+    }
+
+    .complete {
+      color: #0F9D58;
+    }
+
+    .error {
+      color: #D93025;
+    }
+
+    .status:hover {
+      .cancel {
+        display: inline;
+      }
+
+      .uploading, .processing {
+        display: none;
+      }
+    }
+  }
+}
