@@ -11,7 +11,7 @@ export class ExampleComponent {
   files = [];
   kbLoaded = 0;
   percent = 0;
-  url = 'https://components.firestitch.com/api/dummy';
+  url = 'https://boilerplate.firestitch.com/api/dummy';
   public constructor( private fsApi: FsApi,
                       private fsMessage: FsMessage) {}
 
