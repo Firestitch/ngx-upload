@@ -22,6 +22,12 @@ export class UploadFile {
     this.status = status;
     this.message = message;
     this.statusSubject.next(status);
+
+    if (status===UploadFileStatus.Cancelled ||
+        status===UploadFileStatus.Failed ||
+        status===UploadFileStatus.Uploaded) {
+          this.statusSubject.complete();
+    }
   }
 
   public cancel() {
