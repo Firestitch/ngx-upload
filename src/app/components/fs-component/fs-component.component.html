@@ -1,10 +1,23 @@
 <h2 mat-dialog-title>
-  <span class="title">Upload Status</span>
-  <button mat-icon-button [mat-dialog-close]="true" type="button" tabindex="-1"><mat-icon>clear</mat-icon></button>
+  <span class="title">
+    Upload Status
+    <div class="status">
+      <span *ngIf="uploading">{{uploading}} Uploading</span>
+      <span *ngIf="uploaded">{{uploaded}} Successfully Uploaded</span>
+      <span *ngIf="failed">{{failed}} Failed</span>
+      <span *ngIf="cancelled">{{cancelled}} Cancelled</span>
+      <span *ngIf="data.closingTime">Closing Dialog...</span>
+    </div>
+  </span>
+  <div class="close">
+    <mat-progress-spinner *ngIf="data.closingTime" mode="determinate" [value]="data.closingTime" diameter="40" class="closing-timer"></mat-progress-spinner>
+    <button mat-icon-button class="clear" [mat-dialog-close]="true" type="button" tabindex="-1"><mat-icon>clear</mat-icon></button>
+    <button mat-icon-button class="cancel" *ngIf="data.closingTime" (click)="clearClosing()" type="button" tabindex="-1"><mat-icon>cancel</mat-icon></button>
+  </div>
 </h2>
 <mat-dialog-content>
 <div class="files">
-  <div *ngFor="let file of data.files" class="file" [ngClass]="fileClasses[file.status]">
+  <div *ngFor="let file of files" class="file" [ngClass]="fileClasses[file.status]">
     <mat-icon class="icon">{{file.icon}}</mat-icon>
     <div class="name">
       {{file.file.name}}
@@ -13,8 +26,8 @@
     <div class="status">
       <mat-progress-spinner *ngIf="file.status===1" mode="determinate" [value]="file.percent" diameter="25" class="uploading"></mat-progress-spinner>
       <mat-progress-spinner *ngIf="file.status===2" mode="indeterminate" diameter="25" class="processing"></mat-progress-spinner>
-      <mat-icon *ngIf="file.status===3" class="complete">check_circle</mat-icon>
-      <mat-icon *ngIf="file.status===4 || file.status===5" class="error">error</mat-icon>
+      <mat-icon *ngIf="file.status===3" class="uploaded">check_circle</mat-icon>
+      <mat-icon *ngIf="file.status===4 || file.status===5" class="failed">error</mat-icon>
       <a href="javascript:;" (click)="cancel(file)" *ngIf="file.status===1 || file.status===2" class="cancel"><mat-icon>clear</mat-icon></a>
     </div>
   </div>

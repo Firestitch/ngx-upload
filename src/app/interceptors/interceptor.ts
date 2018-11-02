@@ -1,24 +1,36 @@
-import { Injectable } from '@angular/core';
-import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpEventType, HttpSentEvent, HttpProgressEvent } from '@angular/common/http';
-import { Observable, Subject, of } from 'rxjs';
-import { finalize, catchError } from 'rxjs/operators';
+import { Injectable, Inject } from '@angular/core';
+import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpEventType } from '@angular/common/http';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { tap } from 'rxjs/operators';
 import { takeUntil } from 'rxjs/operators';
 import { _throw } from 'rxjs/observable/throw';
-import { UploadDialog } from '../services';
-import { UploadFile, UploadFileStatus } from '../classes';
+import { UploadDialog } from '../services/upload-dialog.service';
+import { UploadFile, UploadFileStatus, FS_UPLOAD_CONFIG } from '../classes';
+import { UploadConfig } from '../interfaces';
 
 @Injectable()
 export class UploadInterceptor implements HttpInterceptor {
-  constructor(private uploadDialog: UploadDialog) {}
+  constructor(private uploadDialog: UploadDialog,
+              @Inject(FS_UPLOAD_CONFIG) private config: UploadConfig) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-    if (!req.headers.has('FsUpload') || !(req.body instanceof FormData)) {
+    let upload = req.body instanceof FormData;
+
+    if (upload) {
+      upload = this.config.upload;
+
+      if (req.headers.has('FsUpload')) {
+        upload = !!req.headers.get('FsUpload');
+      }
+    }
+
+    if (!upload) {
       return next.handle(req);
     }
 
-    const cancelPendingRequests = new Subject<void>()
+    const cancelPendingRequests = new Subject<void>();
     const r = next.handle(req.clone({ reportProgress: true, headers: req.headers.delete('FsUpload') }));
 
     const files = [];
@@ -28,7 +40,7 @@ export class UploadInterceptor implements HttpInterceptor {
       }
     });
 
-    this.uploadDialog.files.push(...files);
+    this.uploadDialog.addFiles(files);
 
     return r.pipe(
       tap((event: HttpEvent<any>) => {
@@ -50,11 +62,8 @@ export class UploadInterceptor implements HttpInterceptor {
         }
 
         if (event.type === HttpEventType.ResponseHeader) {
-
-          if (event.status>=200 && event.status<300) {
-            this.setFileStatus(files, UploadFileStatus.Complete);
-          } else {
-            this.setFileStatus(files, UploadFileStatus.Error);
+          if (event.status && event.status<400) {
+            this.setFileStatus(files, UploadFileStatus.Uploaded);
           }
         }
       }),
@@ -68,8 +77,7 @@ export class UploadInterceptor implements HttpInterceptor {
           message = err.error.message;
         }
 
-        this.setFileStatus(files, UploadFileStatus.Error, message);
-
+        this.setFileStatus(files, UploadFileStatus.Failed, message);
         return _throw(err);
       })
     );
@@ -77,8 +85,7 @@ export class UploadInterceptor implements HttpInterceptor {
 
   private setFileStatus(files, status, message?) {
     files.forEach((file) => {
-      file.status = status;
-      file.message = message;
+      file.setStatus(status,message);
     });
   }
 }

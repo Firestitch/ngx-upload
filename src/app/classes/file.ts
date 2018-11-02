@@ -5,6 +5,7 @@ import { Subject } from "rxjs";
 export class UploadFile {
   public file: File;
   public cancelSubject: Subject<void>;
+  public statusSubject = new Subject();
   public percent = 0;
   public message = '';
   public icon = 'insert_drive_file';
@@ -17,9 +18,14 @@ export class UploadFile {
     // videocam
   }
 
+  public setStatus(status, message) {
+    this.status = status;
+    this.message = message;
+    this.statusSubject.next(status);
+  }
+
   public cancel() {
     this.cancelSubject.next();
-    this.status = UploadFileStatus.Cancelled;
-    this.message = 'Upload was cancelled';
+    this.setStatus(UploadFileStatus.Cancelled,'Upload was cancelled');
   }
 }

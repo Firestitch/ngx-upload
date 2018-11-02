@@ -6,6 +6,32 @@
     padding-right: 10px;
   }
 
+  .close {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    margin-right: -7px;
+
+    .mat-progress-spinner,
+    button {
+      position: absolute;
+      top: 0;
+    }
+
+    .cancel {
+      opacity: 0;
+      mat-icon {
+        background: #fff;
+        border-radius: 50%;
+      }
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+
+  }
+
   .message {
     display: none;
     color: #D93025;
@@ -15,6 +41,7 @@
 
   .icon {
     margin-right: 10px;
+    color: #555;
   }
 
   .mat-dialog-title {
@@ -23,8 +50,16 @@
     align-items: center;
 
     .title {
-      display: flex;
       flex: 1;
+
+      .status {
+        font-size: 12px;
+        line-height: 10px;
+
+        span + span:before {
+          content: ', ';
+        }
+      }
     }
   }
 
@@ -40,7 +75,7 @@
     }
 
     &:hover {
-      &.error,
+      &.failed,
       &.cancelled {
         .message {
           display: flex;
@@ -52,11 +87,11 @@
       }
     }
 
-    .complete {
+    .uploaded {
       color: #0F9D58;
     }
 
-    .error {
+    .failed {
       color: #D93025;
     }
 
