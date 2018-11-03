@@ -14,8 +14,14 @@ export class UploadFile {
   constructor(file: File, cancelSubject) {
     this.file = file;
     this.cancelSubject = cancelSubject;
-    // insert_photo
-    // videocam
+
+    if (file.type.match(/^image/)) {
+      this.icon = 'insert_photo';
+    }
+
+    if (file.type.match(/^video/)) {
+      this.icon = 'videocam';
+    }
   }
 
   public setStatus(status, message) {

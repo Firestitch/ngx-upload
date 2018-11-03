@@ -14,7 +14,6 @@ export class FsComponentComponent {
   public uploaded = 0;
   public cancelled = 0;
   public uploading = 0;
-  private closingTimeout;
   private closingProgressInterval;
   public fileClasses = {  1: 'uploading',
                           2: 'processing',
@@ -65,15 +64,17 @@ export class FsComponentComponent {
     file.cancel();
   }
 
-  private clearClosing() {
-    this.data.closingTime = 0;
-    if (this.closingTimeout) {
-      clearTimeout(this.closingTimeout);
-    }
+  public clearClosing() {
     clearInterval(this.closingProgressInterval);
+    this.data.closingTime = 0;
   }
 
   private startClosing() {
+
+    if (this.failed) {
+      return;
+    }
+
     const interval = 100;
     const seconds = 15;
     this.clearClosing();
