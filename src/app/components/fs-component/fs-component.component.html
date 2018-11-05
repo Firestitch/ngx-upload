@@ -6,13 +6,12 @@
       <span *ngIf="uploaded">{{uploaded}} Successfully Uploaded</span>
       <span *ngIf="failed">{{failed}} Failed</span>
       <span *ngIf="cancelled">{{cancelled}} Cancelled</span>
-      <!-- <span *ngIf="data.closingTime">Closing Dialog...</span> -->
     </div>
   </span>
+  <div *ngIf="closingSeconds>0" class="close-seconds">Closing in {{closingSeconds}}</div>
   <div class="close">
-    <mat-progress-spinner *ngIf="data.closingTime" mode="determinate" [value]="data.closingTime" diameter="40" class="closing-timer"></mat-progress-spinner>
+    <!-- <mat-progress-spinner *ngIf="data.closingPercent" mode="determinate" [value]="data.closingPercent" diameter="40" class="closing-timer"></mat-progress-spinner> -->
     <button mat-icon-button class="clear" [mat-dialog-close]="true" type="button" tabindex="-1"><mat-icon>clear</mat-icon></button>
-    <button mat-icon-button class="cancel" *ngIf="data.closingTime" (click)="clearClosing()" type="button" tabindex="-1"><mat-icon>cancel</mat-icon></button>
   </div>
 </h2>
 <mat-dialog-content>

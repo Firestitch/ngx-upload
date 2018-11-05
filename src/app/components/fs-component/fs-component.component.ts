@@ -15,6 +15,9 @@ export class FsComponentComponent {
   public cancelled = 0;
   public uploading = 0;
   private closingProgressInterval;
+  public closingPercent = 0;
+  public closingTimeout = 15;
+  public closingSeconds = 0;
   public fileClasses = {  1: 'uploading',
                           2: 'processing',
                           3: 'complete',
@@ -66,7 +69,7 @@ export class FsComponentComponent {
 
   public clearClosing() {
     clearInterval(this.closingProgressInterval);
-    this.data.closingTime = 0;
+    this.closingPercent = 0;
   }
 
   private startClosing() {
@@ -76,12 +79,12 @@ export class FsComponentComponent {
     }
 
     const interval = 100;
-    const seconds = 15;
     this.clearClosing();
     this.closingProgressInterval = setInterval(() => {
-      this.data.closingTime += (interval / (seconds * 1000)) * 100;
+      this.closingPercent += (interval / (this.closingTimeout * 1000)) * 100;
+      this.closingSeconds = Math.floor(this.closingTimeout - ((this.closingPercent/ 100)  * this.closingTimeout));
 
-      if (this.data.closingTime>=100) {
+      if (this.closingSeconds<=0) {
         this.clearClosing();
         this.dialogRef.close();
       }

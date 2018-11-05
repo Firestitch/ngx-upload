@@ -9,7 +9,7 @@ export class UploadDialog {
 
   private files = new BehaviorSubject([]);
   private dialogRef;
-  private data = { files: this.files, closingTime: 0 };
+  private data = { files: this.files };
 
   constructor(private dialog: MatDialog) {}
 

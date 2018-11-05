@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable, Inject, Injector } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpEventType } from '@angular/common/http';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -7,12 +7,15 @@ import { takeUntil } from 'rxjs/operators';
 import { _throw } from 'rxjs/observable/throw';
 import { UploadDialog } from '../services/upload-dialog.service';
 import { UploadFile, UploadFileStatus, FS_UPLOAD_CONFIG } from '../classes';
-import { UploadConfig } from '../interfaces';
+import { UploadConfig } from '../interfaces/upload-config';
 
 @Injectable()
 export class UploadInterceptor implements HttpInterceptor {
+  private config: UploadConfig;
   constructor(private uploadDialog: UploadDialog,
-              @Inject(FS_UPLOAD_CONFIG) private config: UploadConfig) {}
+              private injector: Injector) {
+    this.config = this.injector.get(FS_UPLOAD_CONFIG)();
+  }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
