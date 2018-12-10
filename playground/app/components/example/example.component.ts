@@ -54,7 +54,12 @@ export class ExampleComponent {
       }, (err) => {
         this.fsMessage.error(err.message, { mode: 'toast' });
       }, () => {
+
         //this.fsMessage.info('Upload Cancelled');
+        const idx = this.files.indexOf(fsFile);
+        if(idx>=0) {
+          this.files.splice(idx,1);
+        }
         this.percent = 0;
 
       });

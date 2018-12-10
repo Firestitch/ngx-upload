@@ -10,7 +10,6 @@
   </span>
   <div *ngIf="closingSeconds>0" class="close-seconds">Closing in {{closingSeconds}}</div>
   <div class="close">
-    <!-- <mat-progress-spinner *ngIf="data.closingPercent" mode="determinate" [value]="data.closingPercent" diameter="40" class="closing-timer"></mat-progress-spinner> -->
     <button mat-icon-button class="clear" [mat-dialog-close]="true" type="button" tabindex="-1"><mat-icon>clear</mat-icon></button>
   </div>
 </h2>
@@ -27,7 +26,7 @@
       <mat-progress-spinner *ngIf="file.status===2" mode="indeterminate" diameter="25" class="processing"></mat-progress-spinner>
       <mat-icon *ngIf="file.status===3" class="uploaded">check_circle</mat-icon>
       <mat-icon *ngIf="file.status===4 || file.status===5" class="failed">error</mat-icon>
-      <a href="javascript:;" (click)="cancel(file)" *ngIf="file.status===1 || file.status===2" class="cancel"><mat-icon>clear</mat-icon></a>
+      <a href="javascript:;" (click)="cancel(file)" *ngIf="file.status===1" class="cancel"><mat-icon>clear</mat-icon></a>
     </div>
   </div>
 </div>
