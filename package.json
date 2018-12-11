@@ -1,7 +1,7 @@
 {
   "name": "@firestitch/upload",
   "description": "@firestitch/upload",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "repository": {
     "type": "git",
     "url": "https://github.com/Firestitch/ngx-upload"
@@ -80,7 +80,7 @@
     "rxjs": "^6.3.3",
     "ts-node": "~7.0.0",
     "tsickle": ">=0.29.0",
-    "tslib": "^1.9.0",
+    "tslib": "^1.9.3",
     "tslint": "~5.7.0",
     "typescript": "^2.9.2",
     "webpack": "^4.20.2",
@@ -91,7 +91,6 @@
   },
   "peerDependencies": {},
   "dependencies": {
-    "rxjs-compat": "^6.3.3",
-    "tslib": "^1.9.3"
+    "rxjs-compat": "^6.3.3"
   }
 }
