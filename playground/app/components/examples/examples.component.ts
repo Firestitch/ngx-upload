@@ -6,5 +6,5 @@ import { environment } from '../../../environments/environment';
   templateUrl: 'examples.component.html'
 })
 export class ExamplesComponent {
-  public environment = environment;
+  public config = environment;
 }
