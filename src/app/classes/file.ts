@@ -1,5 +1,5 @@
-import { UploadFileStatus } from "./upload-file-status";
-import { Subject } from "rxjs";
+import { Subject } from 'rxjs';
+import { UploadFileStatus } from './upload-file-status';
 
 
 export class UploadFile {
@@ -29,15 +29,17 @@ export class UploadFile {
     this.message = message;
     this.statusSubject.next(status);
 
-    if (status===UploadFileStatus.Cancelled ||
-        status===UploadFileStatus.Failed ||
-        status===UploadFileStatus.Uploaded) {
-          this.statusSubject.complete();
+    if (
+      status === UploadFileStatus.Cancelled
+      || status === UploadFileStatus.Failed
+      || status === UploadFileStatus.Uploaded
+    ) {
+      this.statusSubject.complete();
     }
   }
 
   public cancel() {
     this.cancelSubject.next();
-    this.setStatus(UploadFileStatus.Cancelled,'Upload was cancelled');
+    this.setStatus(UploadFileStatus.Cancelled, 'Upload was cancelled');
   }
 }

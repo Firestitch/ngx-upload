@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { FsComponentComponent } from '../components/fs-component/fs-component.component';
 import { BehaviorSubject } from 'rxjs';
+import { FsUploadComponent } from '../components/upload/upload.component';
 
 
 @Injectable()
@@ -19,7 +19,7 @@ export class UploadDialog {
       return;
     }
 
-    this.dialogRef = this.dialog.open(FsComponentComponent, {
+    this.dialogRef = this.dialog.open(FsUploadComponent, {
       width: '450px',
       hasBackdrop: false,
       position: { bottom: '20px', right: '20px' },

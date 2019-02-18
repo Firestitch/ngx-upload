@@ -1,17 +1,27 @@
-import { Injectable, Inject, Injector } from '@angular/core';
-import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpEventType } from '@angular/common/http';
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import { tap } from 'rxjs/operators';
-import { takeUntil } from 'rxjs/operators';
-import { _throw } from 'rxjs/observable/throw';
+import { Injectable, Injector } from '@angular/core';
+
+import {
+  HttpEvent,
+  HttpEventType,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest
+} from '@angular/common/http';
+
+import { Observable, Subject, throwError } from 'rxjs';
+import { catchError, takeUntil, tap } from 'rxjs/operators';
+
 import { UploadDialog } from '../services/upload-dialog.service';
-import { UploadFile, UploadFileStatus, FS_UPLOAD_CONFIG } from '../classes';
+import { UploadFileStatus } from '../classes/upload-file-status';
+import { UploadFile } from '../classes/file';
+import { FS_UPLOAD_CONFIG} from '../classes/const';
 import { UploadConfig } from '../interfaces/upload-config';
+
 
 @Injectable()
 export class UploadInterceptor implements HttpInterceptor {
   private config: UploadConfig;
+
   constructor(private uploadDialog: UploadDialog,
               private injector: Injector) {
     this.config = this.injector.get(FS_UPLOAD_CONFIG)();
@@ -34,7 +44,10 @@ export class UploadInterceptor implements HttpInterceptor {
     }
 
     const cancelPendingRequests = new Subject<void>();
-    const r = next.handle(req.clone({ reportProgress: true, headers: req.headers.delete('FsUpload') }));
+    const r = next.handle(req.clone({
+      reportProgress: true,
+      headers: req.headers.delete('FsUpload')
+    }));
 
     const files = [];
     (<any>req.body).forEach(file => {
@@ -54,18 +67,18 @@ export class UploadInterceptor implements HttpInterceptor {
         }
 
         if (event.type === HttpEventType.UploadProgress) {
-          const percent = (event.loaded/event.total) * 100;
+          const percent = (event.loaded / event.total) * 100;
           files.forEach((file) => {
             file.percent = percent;
           });
 
-          if(percent>=100) {
+          if (percent >= 100) {
             this.setFileStatus(files, UploadFileStatus.Processing);
           }
         }
 
         if (event.type === HttpEventType.ResponseHeader) {
-          if (event.status && event.status<400) {
+          if (event.status && event.status < 400) {
             this.setFileStatus(files, UploadFileStatus.Uploaded);
           }
         }
@@ -81,14 +94,14 @@ export class UploadInterceptor implements HttpInterceptor {
         }
 
         this.setFileStatus(files, UploadFileStatus.Failed, message);
-        return _throw(err);
+        return throwError(err);
       })
     );
   }
 
   private setFileStatus(files, status, message?) {
     files.forEach((file) => {
-      file.setStatus(status,message);
+      file.setStatus(status, message);
     });
   }
 }

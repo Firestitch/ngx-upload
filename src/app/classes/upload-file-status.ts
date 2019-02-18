@@ -1,4 +1,3 @@
-
 export enum UploadFileStatus {
   Uploading = 1,
   Processing = 2,

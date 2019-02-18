@@ -1,7 +1,7 @@
 import { NgModule, ModuleWithProviders, Injector } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { FsComponentComponent } from './components/fs-component/fs-component.component';
+import { FsUploadComponent } from './components/upload/upload.component';
 import { UploadDialog } from './services/upload-dialog.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { UploadInterceptor } from './interceptors/upload-interceptor.interceptor';
@@ -25,13 +25,13 @@ import {
     MatProgressSpinnerModule
   ],
   exports: [
-    FsComponentComponent
+    FsUploadComponent
   ],
   entryComponents: [
-    FsComponentComponent
+    FsUploadComponent
   ],
   declarations: [
-    FsComponentComponent,
+    FsUploadComponent,
   ]
 })
 export class FsUploadModule {

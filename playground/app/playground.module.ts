@@ -4,19 +4,17 @@ import { RouterModule, Routes } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { FsApiModule } from '@firestitch/api';
 import { FsExampleModule } from '@firestitch/example';
 import { FsFileModule } from '@firestitch/file';
 import { FsMessageModule } from '@firestitch/message';
+import { FsUploadModule } from '@firestitch/upload';
 
-import { FsUploadModule } from 'fs-upload';
+import { ToastrModule } from 'ngx-toastr';
 
 import { AppMaterialModule } from './material.module';
-import {
-ExampleComponent,
-ExamplesComponent } from './components';
+import { ExampleComponent, ExamplesComponent } from './components';
 import { AppComponent } from './app.component';
-import { FsApiModule } from '@firestitch/api';
-import { ToastrModule } from 'ngx-toastr';
 
 
 const routes: Routes = [
@@ -24,7 +22,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  bootstrap: [ AppComponent ],
+  bootstrap: [AppComponent],
   imports: [
     BrowserModule,
     FsUploadModule.forRoot({}),
@@ -38,15 +36,13 @@ const routes: Routes = [
     FsFileModule.forRoot(),
     RouterModule.forRoot(routes),
   ],
-  entryComponents: [
-  ],
+  entryComponents: [],
   declarations: [
     AppComponent,
     ExamplesComponent,
     ExampleComponent
   ],
-  providers: [
-  ],
+  providers: [],
 })
 export class PlaygroundModule {
 }
