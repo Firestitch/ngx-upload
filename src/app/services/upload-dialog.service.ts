@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { BehaviorSubject } from 'rxjs';
 import { FsUploadComponent } from '../components/upload/upload.component';
+import { Overlay } from '@angular/cdk/overlay';
 
 
 @Injectable()
@@ -11,7 +12,8 @@ export class UploadDialog {
   private dialogRef;
   private data = { files: this.files };
 
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: MatDialog,
+              private overlay: Overlay) {}
 
   public open() {
 
@@ -22,8 +24,10 @@ export class UploadDialog {
     this.dialogRef = this.dialog.open(FsUploadComponent, {
       width: '450px',
       hasBackdrop: false,
+      panelClass: 'fs-upload-pane',
       position: { bottom: '20px', right: '20px' },
-      data: this.data
+      data: this.data,
+      scrollStrategy: this.overlay.scrollStrategies.noop()
     });
 
     const afterClose = this.dialogRef.afterClosed().subscribe(result => {
