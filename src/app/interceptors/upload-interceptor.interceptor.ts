@@ -51,7 +51,7 @@ export class UploadInterceptor implements HttpInterceptor {
 
     const files = [];
     (<any>req.body).forEach(file => {
-      if (file instanceof File) {
+      if (this.isFile(file)) {
         files.push(new UploadFile(file, cancelPendingRequests));
       }
     });
@@ -103,5 +103,11 @@ export class UploadInterceptor implements HttpInterceptor {
     files.forEach((file) => {
       file.setStatus(status, message);
     });
+  }
+
+  private isFile(file: any) {
+    return  file instanceof File ||
+            (typeof file === 'object' && file.constructor && file.constructor.name === 'File') ||
+            (typeof file === 'object' && typeof file.name === 'string' && file instanceof Blob);
   }
 }
