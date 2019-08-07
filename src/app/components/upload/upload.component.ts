@@ -3,6 +3,10 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { UploadFileStatus } from './../../classes/upload-file-status';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { UploadService } from '../../services/upload.service';
+import { duration } from '@firestitch/date';
+import { UploadStatus } from 'src/app/classes/upload-status';
+import { HttpEventType } from '@angular/common/http';
 
 @Component({
   selector: 'fs-component',
@@ -14,8 +18,10 @@ export class FsUploadComponent implements OnDestroy {
   public files = [];
   public failed = 0;
   public uploaded = 0;
+  public processing = 0;
   public cancelled = 0;
   public uploading = 0;
+  public remaining = '';
   private closingProgressInterval;
   public closingPercent = 0;
   public closingTimeout = 15;
@@ -31,7 +37,40 @@ export class FsUploadComponent implements OnDestroy {
   private _destroy$ = new Subject<void>();
 
   constructor(public dialogRef: MatDialogRef<FsUploadComponent>,
+              private _uploadService: UploadService,
               @Inject(MAT_DIALOG_DATA) public data) {
+
+    this._uploadService.uploadStatus$
+      .pipe(
+        takeUntil(this._destroy$),
+      )
+      .subscribe((uploadedStatuses: UploadStatus[]) => {
+
+        this.remaining = '';
+
+        if (uploadedStatuses.length) {
+
+          let bytesPerSecond = 0;
+          let remainingBytes = 0;
+
+          const statuses = uploadedStatuses.filter(item => {
+            return item.status === HttpEventType.UploadProgress;
+          });
+
+          statuses.forEach(uploadedStatus => {
+            bytesPerSecond += uploadedStatus.bytesPerSecond;
+            remainingBytes += uploadedStatus.remainingBytes;
+          });
+
+          const remainingSeconds = remainingBytes / (bytesPerSecond / statuses.length);
+
+          if (remainingSeconds > 0) {
+            this.remaining = ' '
+                              .concat(duration(remainingSeconds, { hours: true, minutes: true, seconds: true }))
+                              .concat(' remaining');
+          }
+        }
+      });
 
     this.data.files
       .pipe(
@@ -45,31 +84,47 @@ export class FsUploadComponent implements OnDestroy {
         files.forEach(file => {
 
           file.statusSubject
-            .pipe(
-              takeUntil(this._destroy$),
-            )
-            .subscribe(status => {
+          .pipe(
+            takeUntil(this._destroy$),
+          )
+          .subscribe(status => {
 
-            if (status === UploadFileStatus.Uploading) {
-              this.uploading++;
-            }
+            let uploading = 0;
+            let uploaded = 0;
+            let processing = 0;
+            let failed = 0;
+            let cancelled = 0;
 
-            if (status === UploadFileStatus.Uploaded) {
-              this.uploaded++;
-              this.uploading--;
-            }
+            this.files.forEach(file => {
+              switch (file.status) {
+                case UploadFileStatus.Uploading:
+                  uploading++;
+                  break;
+                case UploadFileStatus.Processing:
+                  processing++;
+                  break;
+                case UploadFileStatus.Uploaded:
+                  uploaded++;
+                  break;
+                case UploadFileStatus.Failed:
+                  failed++;
+                  break;
+                case UploadFileStatus.Cancelled:
+                  cancelled++;
+                  break;
+              }
+            });
 
-            if (status === UploadFileStatus.Failed) {
-              this.failed++;
-              this.uploading--;
-            }
+            this.uploading = uploading;
+            this.uploaded = uploaded;
+            this.processing = processing;
+            this.failed = failed;
+            this.cancelled = cancelled;
 
-            if (status === UploadFileStatus.Cancelled) {
-              this.cancelled++;
-              this.uploading--;
-            }
-
-            if (status !== UploadFileStatus.Failed && status !== UploadFileStatus.Cancelled && !this.uploading) {
+            if (status !== UploadFileStatus.Failed &&
+                status !== UploadFileStatus.Cancelled &&
+                !this.uploading &&
+                !this.processing) {
               this.startClosing();
             }
           });

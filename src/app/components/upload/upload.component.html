@@ -2,10 +2,16 @@
   <span class="title">
     Upload Status
     <div class="status">
-      <span *ngIf="uploading">{{uploading}} Uploading</span>
-      <span *ngIf="uploaded">{{uploaded}} Successfully Uploaded</span>
-      <span *ngIf="failed">{{failed}} Failed</span>
-      <span *ngIf="cancelled">{{cancelled}} Cancelled</span>
+      <ng-container *ngIf="uploading || processing; else elseUploadingProcessing">
+        <span *ngIf="uploading">{{uploading}} Uploading{{remaining}}</span>
+        <span *ngIf="processing">{{processing}} Processing</span>
+      </ng-container>
+
+      <ng-template #elseUploadingProcessing>
+        <span *ngIf="uploaded">{{uploaded}} Successfully Uploaded</span>
+        <span *ngIf="failed">{{failed}} Failed</span>
+        <span *ngIf="cancelled">{{cancelled}} Cancelled</span>
+      </ng-template>
     </div>
   </span>
   <div *ngIf="closingSeconds>0" class="close-seconds">Closing in {{closingSeconds}}</div>
@@ -16,7 +22,7 @@
 <mat-dialog-content>
 <div class="files">
   <div *ngFor="let file of files" class="file" [ngClass]="fileClasses[file.status]">
-    <mat-icon class="icon">{{file.icon}}</mat-icon>
+    <mat-icon class="icon" [ngClass]="'file-' + file.fileType">{{file.icon}}</mat-icon>
     <div class="name">
       {{file.file.name}}
     </div>
@@ -26,7 +32,7 @@
       <mat-progress-spinner *ngIf="file.status===2" mode="indeterminate" diameter="25" class="processing"></mat-progress-spinner>
       <mat-icon *ngIf="file.status===3" class="uploaded">check_circle</mat-icon>
       <mat-icon *ngIf="file.status===4 || file.status===5" class="failed">error</mat-icon>
-      <a href="javascript:;" (click)="cancel(file)" *ngIf="file.status===1" class="cancel"><mat-icon>clear</mat-icon></a>
+      <a href="javascript:;" (click)="cancel(file)" *ngIf="file.status===1" class="cancel" matTooltip="Cancel"><mat-icon>cancel</mat-icon></a>
     </div>
   </div>
 </div>

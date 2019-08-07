@@ -1,9 +1,11 @@
 :host {
 
   .name {
-    display: flex;
-    flex: 1;
     padding-right: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
   }
 
   .close-seconds {
@@ -21,19 +23,6 @@
       position: absolute;
       top: 0;
     }
-
-    .cancel {
-      opacity: 0;
-      mat-icon {
-        background: #fff;
-        border-radius: 50%;
-      }
-
-      &:hover {
-        opacity: 1;
-      }
-    }
-
   }
 
   .message {
@@ -73,9 +62,26 @@
     align-items: center;
     min-height: 40px;
 
+    mat-icon {
+      color: #8F8F8F;
+
+      &.file-image {
+        color: #D93025
+      }
+
+      &.file-video {
+        color: #7A297B
+      }
+    }
+
     .cancel {
       display: none;
-      color: inherit;
+      color: #D93025;
+    }
+
+    &.failed,
+    &.cancelled {
+      cursor: pointer;
     }
 
     &:hover {
@@ -99,12 +105,12 @@
       color: #D93025;
     }
 
-    .status:hover {
+    &.uploading .status:hover {
       .cancel {
         display: inline;
       }
 
-      .uploading {
+      .mat-progress-spinner {
         display: none;
       }
     }

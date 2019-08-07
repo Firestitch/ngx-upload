@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { FsUploadComponent } from './components/upload/upload.component';
 import { UploadDialog } from './services/upload-dialog.service';
+import { UploadService } from './services/upload.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { UploadInterceptor } from './interceptors/upload-interceptor.interceptor';
 import { FS_UPLOAD_CONFIG, FS_UPLOAD_CONFIG_ORIGINAL } from './classes/const';
@@ -13,8 +14,10 @@ import {
   MatDialogModule,
   MatIconModule,
   MatButtonModule,
-  MatProgressSpinnerModule
+  MatProgressSpinnerModule,
+  MatTooltipModule
 } from '@angular/material';
+
 
 @NgModule({
   imports: [
@@ -22,6 +25,7 @@ import {
     MatDialogModule,
     MatIconModule,
     MatButtonModule,
+    MatTooltipModule,
     MatProgressSpinnerModule
   ],
   exports: [
@@ -40,7 +44,9 @@ export class FsUploadModule {
       ngModule: FsUploadModule,
        providers: [
         UploadDialog,
-        { provide: HTTP_INTERCEPTORS, useClass: UploadInterceptor, deps: [ UploadDialog, Injector ], multi: true },
+        UploadService,
+        { provide: HTTP_INTERCEPTORS, useClass: UploadInterceptor,
+          deps: [ UploadDialog, UploadService, Injector ], multi: true },
         { provide: FS_UPLOAD_CONFIG_ORIGINAL, useValue: config },
         { provide: FS_UPLOAD_CONFIG, useFactory: FsUploadConfigInit, deps: [ FS_UPLOAD_CONFIG_ORIGINAL ] },
       ]

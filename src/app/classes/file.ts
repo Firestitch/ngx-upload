@@ -8,6 +8,7 @@ export class UploadFile {
   public statusSubject = new Subject();
   public percent = 0;
   public message = '';
+  public fileType = 'generic';
   public icon = 'insert_drive_file';
   public status: UploadFileStatus;
 
@@ -17,10 +18,12 @@ export class UploadFile {
 
     if (file.type.match(/^image/)) {
       this.icon = 'insert_photo';
+      this.fileType = 'image';
     }
 
     if (file.type.match(/^video/)) {
       this.icon = 'videocam';
+      this.fileType = 'video';
     }
   }
 
