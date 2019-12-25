@@ -13,16 +13,16 @@
   }
 
   .close {
-    position: relative;
-    width: 40px;
-    height: 40px;
+    //position: relative;
+    //width: 40px;
+    //height: 40px;
     margin-right: -7px;
-
-    .mat-progress-spinner,
-    button {
-      position: absolute;
-      top: 0;
-    }
+    //
+    //.mat-progress-spinner,
+    //button {
+    //  position: absolute;
+    //  top: 0;
+    //}
   }
 
   .message {
@@ -37,21 +37,30 @@
     color: #555;
   }
 
-  .mat-dialog-title {
+  .container {
     display: flex;
     flex-direction: row;
     align-items: center;
+    margin-bottom: 20px;
 
-    .title {
+    .heading-status {
       flex: 1;
 
-      .status {
-        font-size: 12px;
-        line-height: 10px;
+      h2 {
+        margin: 0 auto;
+      }
+    }
+  }
 
-        span + span:before {
-          content: ', ';
-        }
+  .title {
+    flex: 1;
+
+    .status {
+      font-size: 12px;
+      line-height: 10px;
+
+      span + span:before {
+        content: ', ';
       }
     }
   }
