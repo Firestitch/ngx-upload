@@ -6,7 +6,7 @@ import {
   OnDestroy
 } from '@angular/core';
 import { HttpEventType } from '@angular/common/http';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { duration } from '@firestitch/date';
 
 import { Subject } from 'rxjs';

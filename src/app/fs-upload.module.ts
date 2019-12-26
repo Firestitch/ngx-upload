@@ -10,13 +10,11 @@ import { FS_UPLOAD_CONFIG, FS_UPLOAD_CONFIG_ORIGINAL } from './classes/const';
 import { UploadConfig } from './interfaces/upload-config';
 import { FsUploadConfigInit } from './functions/upload-config-init.function';
 
-import {
-  MatDialogModule,
-  MatIconModule,
-  MatButtonModule,
-  MatProgressSpinnerModule,
-  MatTooltipModule
-} from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @NgModule({

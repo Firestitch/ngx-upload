@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { FsUploadComponent } from '../components/upload/upload.component';
 import { Overlay } from '@angular/cdk/overlay';
