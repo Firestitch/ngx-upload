@@ -19,7 +19,7 @@
     </div>
   </div>
   <div class="close">
-    <span *ngIf="closingSeconds > 0" class="close-seconds">Closing in {{closingSeconds}}</span>
+    <span *ngIf="closingSeconds > 0 && closingPercent > 0" class="close-seconds">Closing in {{closingSeconds}}</span>
     <button mat-icon-button class="clear" [mat-dialog-close]="true" type="button" tabindex="-1">
       <mat-icon>clear</mat-icon>
     </button>
