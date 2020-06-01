@@ -75,7 +75,7 @@ export class FsUploadComponent implements OnDestroy {
         });
 
         this._cdRef.markForCheck();
-    });
+      });
   }
 
   public ngOnDestroy() {
@@ -158,27 +158,21 @@ export class FsUploadComponent implements OnDestroy {
         this.failed = failed;
         this.cancelled = cancelled;
 
-        if (status !== UploadFileStatus.Failed &&
-          status !== UploadFileStatus.Cancelled &&
-          !this.uploading &&
-          !this.processing) {
-          this.startClosing();
+        if (!this.uploading && !this.processing) {
+          const timeout = this.failed ? this.closingTimeout * 2 : this.closingTimeout;
+          this.startClosing(timeout);
         }
       });
   }
 
-  private startClosing() {
-
-    if (this.failed) {
-      return;
-    }
+  private startClosing(closingTimeout) {
 
     const interval = 100;
     this.clearClosing();
 
     this.closingProgressInterval = setInterval(() => {
-      this.closingPercent += (interval / (this.closingTimeout * 1000)) * 100;
-      this.closingSeconds = Math.floor(this.closingTimeout - ((this.closingPercent / 100) * this.closingTimeout));
+      this.closingPercent += (interval / (closingTimeout * 1000)) * 100;
+      this.closingSeconds = Math.floor(closingTimeout - ((this.closingPercent / 100) * closingTimeout));
 
       this._cdRef.markForCheck();
 

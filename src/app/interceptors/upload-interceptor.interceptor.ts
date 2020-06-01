@@ -77,8 +77,6 @@ export class UploadInterceptor implements HttpInterceptor {
 
           uploadStatus.update(event);
 
-          this._uploadService.uploadStatus$.next(this._uploadStatuses);
-
           const percent = (event.loaded / event.total) * 100;
           files.forEach((file) => {
             file.percent = percent;
@@ -95,6 +93,8 @@ export class UploadInterceptor implements HttpInterceptor {
             this.setFileStatus(files, UploadFileStatus.Uploaded);
           }
         }
+
+        this._uploadService.uploadStatus$.next(this._uploadStatuses);
       }),
       takeUntil(
         cancelPendingRequests.asObservable()
@@ -112,6 +112,7 @@ export class UploadInterceptor implements HttpInterceptor {
       }),
       finalize(() => {
         remove(this._uploadStatuses, uploadStatus);
+        this._uploadService.uploadStatus$.next(this._uploadStatuses);
       })
     );
   }
