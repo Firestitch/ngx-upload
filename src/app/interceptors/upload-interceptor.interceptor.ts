@@ -53,11 +53,11 @@ export class UploadInterceptor implements HttpInterceptor {
     }));
 
     const files = [];
-    (<any>req.body).forEach(file => {
-      if (this.isFile(file)) {
-        files.push(new UploadFile(file, cancelPendingRequests));
+    for (const entry of (req.body as any).entries()) {
+      if (this.isFile(entry[1])) {
+        files.push(new UploadFile(entry[1], cancelPendingRequests));
       }
-    });
+    }
 
     this._uploadService.addFiles(files);
     this._uploadDialog.open();

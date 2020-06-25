@@ -8,7 +8,7 @@ import {
 import { MatDialogRef } from '@angular/material/dialog';
 
 import { Subject, interval } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, debounceTime } from 'rxjs/operators';
 
 import { UploadFileStatus } from '../../enums/upload-file-status';
 import { UploadFile } from './../../classes/file';
@@ -119,6 +119,7 @@ export class FsUploadComponent implements OnDestroy {
     file.statusSubject
       .pipe(
         takeUntil(this._destroy$),
+        debounceTime(500)
       )
       .subscribe(status => {
         this._update();
