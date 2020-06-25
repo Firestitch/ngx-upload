@@ -1,43 +1,51 @@
+import { UploadFile } from './../classes/file';
 import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject } from 'rxjs';
-import { FsUploadComponent } from '../components/upload/upload.component';
 import { Overlay } from '@angular/cdk/overlay';
+
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+
+import { FsUploadComponent } from '../components/upload/upload.component';
+import { UploadService } from './upload.service';
 
 
 @Injectable()
 export class UploadDialog {
 
-  private files = new BehaviorSubject([]);
-  private dialogRef;
-  private data = { files: this.files };
+  private _dialogRef: MatDialogRef<FsUploadComponent>;
 
-  constructor(private dialog: MatDialog,
-              private overlay: Overlay) {}
+  constructor(
+    private _dialog: MatDialog,
+    private _overlay: Overlay,
+    private _uploadService: UploadService,
+  ) { }
 
   public open() {
 
-    if (this.dialogRef) {
+    if (this._dialogRef) {
       return;
     }
 
-    this.dialogRef = this.dialog.open(FsUploadComponent, {
+    this._dialogRef = this._dialog.open(FsUploadComponent, {
       width: '450px',
       hasBackdrop: false,
       panelClass: 'fs-upload-pane',
       position: { bottom: '20px', right: '20px' },
-      data: this.data,
-      scrollStrategy: this.overlay.scrollStrategies.noop()
+      disableClose: true,
+      scrollStrategy: this._overlay.scrollStrategies.noop(),
     });
 
-    const afterClose = this.dialogRef.afterClosed().subscribe(result => {
-      this.dialogRef = null;
-      this.files.next([]);
-      afterClose.unsubscribe();
-    });
+    const afterClose = this._dialogRef
+      .afterClosed()
+      .subscribe(result => {
+
+        const files = this._uploadService.files.filter((file: UploadFile) => {
+          return file.isCompleted();
+        });
+
+        this._uploadService.removeFiles(files);
+        this._dialogRef = null;
+        afterClose.unsubscribe();
+      });
   }
 
-  public addFiles(files) {
-    this.files.next(files);
-  }
 }

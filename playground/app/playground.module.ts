@@ -29,7 +29,7 @@ const routes: Routes = [
     BrowserAnimationsModule,
     AppMaterialModule,
     FormsModule,
-    FsApiModule,
+    FsApiModule.forRoot({ maxFileConnections: 3 }),
     FsExampleModule.forRoot({ iframeObserveBody: true }),
     FsMessageModule.forRoot(),
     ToastrModule.forRoot(),

@@ -6,7 +6,7 @@ import { UploadDialog } from './services/upload-dialog.service';
 import { UploadService } from './services/upload.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { UploadInterceptor } from './interceptors/upload-interceptor.interceptor';
-import { FS_UPLOAD_CONFIG, FS_UPLOAD_CONFIG_ORIGINAL } from './classes/const';
+import { FS_UPLOAD_CONFIG, FS_UPLOAD_CONFIG_ORIGINAL } from './consts/const';
 import { UploadConfig } from './interfaces/upload-config';
 import { FsUploadConfigInit } from './functions/upload-config-init.function';
 
@@ -15,16 +15,20 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { FsDateModule } from '@firestitch/date';
 
 
 @NgModule({
   imports: [
     CommonModule,
+
     MatDialogModule,
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+
+    FsDateModule,
   ],
   exports: [
     FsUploadComponent
@@ -41,8 +45,8 @@ export class FsUploadModule {
     return {
       ngModule: FsUploadModule,
        providers: [
-        UploadDialog,
-        UploadService,
+         UploadDialog,
+         UploadService,
         { provide: HTTP_INTERCEPTORS, useClass: UploadInterceptor,
           deps: [ UploadDialog, UploadService, Injector ], multi: true },
         { provide: FS_UPLOAD_CONFIG_ORIGINAL, useValue: config },

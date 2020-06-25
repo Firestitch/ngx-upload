@@ -1,20 +1,17 @@
+import { UploadService } from './../../services/upload.service';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Inject,
   OnDestroy
 } from '@angular/core';
-import { HttpEventType } from '@angular/common/http';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { duration } from '@firestitch/date';
+import { MatDialogRef } from '@angular/material/dialog';
 
-import { Subject } from 'rxjs';
+import { Subject, interval } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { UploadService } from '../../services/upload.service';
-import { UploadStatus } from '../../classes/upload-status';
-import { UploadFileStatus } from '../../classes/upload-file-status';
+import { UploadFileStatus } from '../../enums/upload-file-status';
+import { UploadFile } from './../../classes/file';
 
 @Component({
   selector: 'fs-component',
@@ -24,58 +21,58 @@ import { UploadFileStatus } from '../../classes/upload-file-status';
 })
 export class FsUploadComponent implements OnDestroy {
 
-  public files = [];
+  public files: UploadFile[] = [];
   public failed = 0;
   public uploaded = 0;
   public processing = 0;
   public cancelled = 0;
   public uploading = 0;
-  public remaining = '';
-  private closingProgressInterval;
+  public queued = 0;
+  public remainingSeconds: number;
   public closingPercent = 0;
   public closingTimeout = 15;
-  public closingSeconds = 0;
-  public fileClasses = {
-    1: 'uploading',
-    2: 'processing',
-    3: 'complete',
-    4: 'failed',
-    5: 'cancelled'
-  };
+  public closingSeconds = null;
+  public uploadTotalBytes = 0;
+  public uploadLoadedBytes = 0;
+  public UploadFileStatus = UploadFileStatus;
+  public bytesPerSecond: number[] = [];
 
   private _destroy$ = new Subject<void>();
 
   constructor(
-    public dialogRef: MatDialogRef<FsUploadComponent>,
-    @Inject(MAT_DIALOG_DATA) public data,
+    private _dialogRef: MatDialogRef<FsUploadComponent>,
     private _uploadService: UploadService,
     private _cdRef: ChangeDetectorRef,
   ) {
-
-    this._uploadService.uploadStatus$
-      .pipe(
-        takeUntil(this._destroy$),
-      )
-      .subscribe((uploadedStatuses: UploadStatus[]) => {
-        this._calcRemaning(uploadedStatuses);
-
-        this._cdRef.markForCheck();
-      });
-
-    this.data.files
+    this._addFiles(this._uploadService.files);
+    this._uploadService.filesAdded$
       .pipe(
         takeUntil(this._destroy$),
       )
       .subscribe(files => {
-        this.files.push(...files);
-        this.clearClosing();
-
-        files.forEach(file => {
-          this._processFile(file);
-        });
-
-        this._cdRef.markForCheck();
+        this._addFiles(files);
       });
+
+      interval(1000)
+        .pipe(
+          takeUntil(this._destroy$)
+        )
+        .subscribe(() => {
+          if (this.uploading) {
+            this._calcRemaning();
+            this._cdRef.markForCheck();
+          }
+
+          if (this.closingSeconds !== null) {
+            this.closingSeconds--;
+            this._cdRef.markForCheck();
+
+            if (this.closingSeconds <= 0) {
+              this._clearClosing();
+              this._dialogRef.close();
+            }
+          }
+        });
   }
 
   public ngOnDestroy() {
@@ -85,101 +82,109 @@ export class FsUploadComponent implements OnDestroy {
 
   public cancel(file) {
     file.cancel();
+    this._update();
   }
 
-  public clearClosing() {
-    clearInterval(this.closingProgressInterval);
-    this.closingPercent = 0;
+  private _addFiles(files) {
+    this.files.push(...files);
+
+    this.uploadTotalBytes += files.reduce((total, file) => {
+      return total + file.file.size;
+    }, 0);
+
+    this._clearClosing();
+    files.forEach((file: UploadFile) => {
+      this._processFile(file);
+    });
+    this._cdRef.markForCheck();
   }
 
-  protected _calcRemaning(uploadedStatuses: UploadStatus[]) {
-    this.remaining = '';
+  private _calcRemaning() {
+    const bytesPerSecond = this.bytesPerSecond.reduce((total, value) => {
+      return total + value;
+    }, 0);
 
-    if (uploadedStatuses.length) {
+    const avgBytesPerSecond = bytesPerSecond / this.bytesPerSecond.length;
 
-      let bytesPerSecond = 0;
-      let remainingBytes = 0;
+    const bytes = this.uploadTotalBytes - this.uploadLoadedBytes;
 
-      const statuses = uploadedStatuses.filter(item => {
-        return item.status === HttpEventType.UploadProgress;
-      });
+    this.remainingSeconds = Math.floor(bytes / avgBytesPerSecond);
 
-      statuses.forEach(uploadedStatus => {
-        bytesPerSecond += uploadedStatus.bytesPerSecond;
-        remainingBytes += uploadedStatus.remainingBytes;
-      });
 
-      const remainingSeconds = remainingBytes / (bytesPerSecond / statuses.length);
+    console.log({ kb: bytes / 1024, avgBytesPerSecond: avgBytesPerSecond });
 
-      if (remainingSeconds > 0) {
-        this.remaining = ' '
-          .concat(duration(remainingSeconds, { hours: true, minutes: true, seconds: true }))
-          .concat(' remaining');
-      }
-    }
   }
 
-  protected _processFile(file) {
+  private _processFile(file: UploadFile) {
     file.statusSubject
       .pipe(
         takeUntil(this._destroy$),
       )
       .subscribe(status => {
-
-        let uploading = 0;
-        let uploaded = 0;
-        let processing = 0;
-        let failed = 0;
-        let cancelled = 0;
-
-        this.files.forEach(f => {
-          switch (f.status) {
-            case UploadFileStatus.Uploading:
-              uploading++;
-              break;
-            case UploadFileStatus.Processing:
-              processing++;
-              break;
-            case UploadFileStatus.Uploaded:
-              uploaded++;
-              break;
-            case UploadFileStatus.Failed:
-              failed++;
-              break;
-            case UploadFileStatus.Cancelled:
-              cancelled++;
-              break;
-          }
-        });
-
-        this.uploading = uploading;
-        this.uploaded = uploaded;
-        this.processing = processing;
-        this.failed = failed;
-        this.cancelled = cancelled;
-
-        if (!this.uploading && !this.processing) {
-          const timeout = this.failed ? this.closingTimeout * 2 : this.closingTimeout;
-          this.startClosing(timeout);
-        }
+        this._update();
       });
   }
 
-  private startClosing(closingTimeout) {
+  private _update() {
 
-    const interval = 100;
-    this.clearClosing();
+    let uploading = 0;
+    let uploaded = 0;
+    let processing = 0;
+    let failed = 0;
+    let cancelled = 0;
+    let queued = 0;
+    let uploadLoadedBytes = 0;
 
-    this.closingProgressInterval = setInterval(() => {
-      this.closingPercent += (interval / (closingTimeout * 1000)) * 100;
-      this.closingSeconds = Math.floor(closingTimeout - ((this.closingPercent / 100) * closingTimeout));
-
-      this._cdRef.markForCheck();
-
-      if (this.closingSeconds <= 0) {
-        this.clearClosing();
-        this.dialogRef.close();
+    this.files.forEach((file: UploadFile) => {
+      uploadLoadedBytes += file.loaded;
+      switch (file.status) {
+        case UploadFileStatus.Uploading:
+          if (file.bytesPerSecond) {
+            this.bytesPerSecond.unshift(file.bytesPerSecond);
+          }
+          uploading++;
+          break;
+        case UploadFileStatus.Processing:
+          processing++;
+          break;
+        case UploadFileStatus.Uploaded:
+          uploaded++;
+          break;
+        case UploadFileStatus.Cancelled:
+          cancelled++;
+          break;
+        case UploadFileStatus.Failed:
+          failed++;
+          break;
+        case UploadFileStatus.Queued:
+          queued++;
+          break;
       }
-    }, interval);
+    });
+
+    this.uploading = uploading;
+    this.uploaded = uploaded;
+    this.processing = processing;
+    this.failed = failed;
+    this.cancelled = cancelled;
+    this.queued = queued;
+    this.uploadLoadedBytes = uploadLoadedBytes;
+    this.bytesPerSecond = this.bytesPerSecond.splice(0, 50);
+
+    if (!this.uploading && !this.processing && !this.queued) {
+      const timeout = this.failed ? this.closingTimeout * 2 : this.closingTimeout;
+      this._startClosing(timeout);
+      this.remainingSeconds = 0;
+    }
+
+    this._cdRef.markForCheck();
+  }
+
+  private _clearClosing() {
+    this.closingSeconds = null;
+  }
+
+  private _startClosing(closingTimeout) {
+    this.closingSeconds = closingTimeout;
   }
 }
