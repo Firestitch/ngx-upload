@@ -109,10 +109,6 @@ export class FsUploadComponent implements OnDestroy {
     const bytes = this.uploadTotalBytes - this.uploadLoadedBytes;
 
     this.remainingSeconds = Math.floor(bytes / avgBytesPerSecond);
-
-
-    console.log({ kb: bytes / 1024, avgBytesPerSecond: avgBytesPerSecond });
-
   }
 
   private _processFile(file: UploadFile) {
