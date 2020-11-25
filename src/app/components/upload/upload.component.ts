@@ -30,7 +30,7 @@ export class FsUploadComponent implements OnDestroy {
   public queued = 0;
   public remainingSeconds: number;
   public closingPercent = 0;
-  public closingTimeout = 15;
+  public closingTimeout = 10;
   public closingSeconds = null;
   public uploadTotalBytes = 0;
   public uploadLoadedBytes = 0;
@@ -169,7 +169,7 @@ export class FsUploadComponent implements OnDestroy {
     this.bytesPerSecond = this.bytesPerSecond.splice(0, 50);
 
     if (!this.uploading && !this.processing && !this.queued) {
-      const timeout = this.failed ? this.closingTimeout * 2 : this.closingTimeout;
+      const timeout = this.failed ? this.closingTimeout : 0;
       this._startClosing(timeout);
       this.remainingSeconds = 0;
     }
