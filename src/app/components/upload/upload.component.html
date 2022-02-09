@@ -5,7 +5,7 @@
         Upload Status
       </h2>
       <div class="status">
-        <div class="counts">
+        <span class="counts">
           <ng-container *ngIf="uploading || processing || queued; else elseUploadingProcessing">
             <span *ngIf="uploading + queued">{{uploading + queued}} Uploading</span>
             <span *ngIf="processing">{{processing}} Processing</span>
@@ -15,8 +15,8 @@
             <span *ngIf="failed">{{failed}} Failed</span>
             <span *ngIf="cancelled">{{cancelled}} Cancelled</span>
           </ng-template>
-        </div>
-        <div class="remaining" *ngIf="remainingSeconds">{{remainingSeconds | fsDateDuration: { minutes: true, seconds: true} }} remaining</div>
+        </span>
+        <span class="remaining" *ngIf="remainingSeconds">, {{remainingSeconds | fsDateDuration: { minutes: true, seconds: true} }} remaining</span>
       </div>
     </div>
     <div class="close">
@@ -51,7 +51,8 @@
           diameter="25"
           class="processing"></mat-progress-spinner>
         <mat-icon *ngIf="file.status===UploadFileStatus.Uploaded" class="uploaded">check_circle</mat-icon>
-        <mat-icon *ngIf="file.status===UploadFileStatus.Failed || file.status===UploadFileStatus.Cancelled" class="failed">error</mat-icon>
+        <mat-icon *ngIf="file.status===UploadFileStatus.Failed" class="failed">error</mat-icon>
+        <mat-icon *ngIf="file.status===UploadFileStatus.Cancelled" class="cancelled">report</mat-icon>
         <a href="javascript:;"
           *ngIf="file.status===UploadFileStatus.Uploading || file.status===UploadFileStatus.Processing"
           (click)="cancel(file)"

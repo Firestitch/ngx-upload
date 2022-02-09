@@ -11,17 +11,22 @@ export class ExampleComponent {
   files = [];
   kbLoaded = 0;
   percent = 0;
-  url = 'https://boilerplate.firestitch.com/api/dummy';
+  url = 'https://specify.dev.firestitch.com/api/dummy';
 
-  public constructor(private fsApi: FsApi,
-                     private fsMessage: FsMessage) {
+  public constructor(
+    private fsApi: FsApi,
+    private fsMessage: FsMessage,
+  ) {
   }
 
   public select(fsFiles, error?, sleep?) {
     this.files.push(...fsFiles);
 
     fsFiles.forEach(fsFile => {
-      const data: any = { file: fsFile.file, sleep: sleep };
+      const data: any = { 
+        file: fsFile.file, 
+        sleep 
+      };
 
       if (error) {
         data.exception = 'Somethign bad happened and there is no way to fix it! Call 911!';

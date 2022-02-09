@@ -83,7 +83,6 @@ export class UploadInterceptor implements HttpInterceptor {
         } else if (event.type === HttpEventType.Response) {
           this.setFileStatus(files, UploadFileStatus.Uploaded);
         }
-
       }),
       takeUntil(
         cancelPendingRequests.asObservable()
@@ -99,7 +98,10 @@ export class UploadInterceptor implements HttpInterceptor {
         return throwError(err);
       }),
       finalize(() => {
-        this.setFileStatus(files, UploadFileStatus.Uploaded);
+        const failed = files.some((file) => file.status === UploadFileStatus.Failed);
+        if(!failed) {
+          this.setFileStatus(files, UploadFileStatus.Uploaded);
+        }
       })
     );
   }

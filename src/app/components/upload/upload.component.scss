@@ -108,6 +108,10 @@
       color: #D93025;
     }
 
+    .cancelled {
+      color: #e3801d;
+    }
+
     &.uploading,
     &.processing {
       .status:hover {

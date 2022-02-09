@@ -63,7 +63,7 @@ export class FsUploadComponent implements OnDestroy {
             this._cdRef.markForCheck();
           }
 
-          if (this.closingSeconds !== null) {
+          if (!this.running && !this.failed) {
             this.closingSeconds--;
             this._cdRef.markForCheck();
 
@@ -85,6 +85,10 @@ export class FsUploadComponent implements OnDestroy {
     this._update();
   }
 
+  public get running() {
+    return this.uploading || this.processing || this.queued;
+  }
+
   private _addFiles(files) {
     this.files.push(...files);
 
@@ -96,6 +100,7 @@ export class FsUploadComponent implements OnDestroy {
     files.forEach((file: UploadFile) => {
       this._processFile(file);
     });
+
     this._cdRef.markForCheck();
   }
 
@@ -105,7 +110,6 @@ export class FsUploadComponent implements OnDestroy {
     }, 0);
 
     const avgBytesPerSecond = bytesPerSecond / this.bytesPerSecond.length;
-
     const bytes = this.uploadTotalBytes - this.uploadLoadedBytes;
 
     this.remainingSeconds = Math.floor(bytes / avgBytesPerSecond);
@@ -115,15 +119,13 @@ export class FsUploadComponent implements OnDestroy {
     file.statusSubject
       .pipe(
         takeUntil(this._destroy$),
-        debounceTime(500)
       )
-      .subscribe(status => {
+      .subscribe(() => {
         this._update();
       });
   }
 
   private _update() {
-
     let uploading = 0;
     let uploaded = 0;
     let processing = 0;
@@ -131,6 +133,7 @@ export class FsUploadComponent implements OnDestroy {
     let cancelled = 0;
     let queued = 0;
     let uploadLoadedBytes = 0;
+    this.closingSeconds = null;
 
     this.files.forEach((file: UploadFile) => {
       uploadLoadedBytes += file.loaded;
@@ -168,10 +171,13 @@ export class FsUploadComponent implements OnDestroy {
     this.uploadLoadedBytes = uploadLoadedBytes;
     this.bytesPerSecond = this.bytesPerSecond.splice(0, 50);
 
-    if (!this.uploading && !this.processing && !this.queued) {
-      const timeout = this.failed ? this.closingTimeout : 0;
-      this._startClosing(timeout);
-      this.remainingSeconds = 0;
+    if (!this.running) {      
+      this._startClosing(this.closingTimeout);
+      this.remainingSeconds = 0;    
+    }
+
+    if(this.failed) {
+      this.closingSeconds = 0;
     }
 
     this._cdRef.markForCheck();

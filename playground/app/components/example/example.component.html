@@ -9,9 +9,13 @@
     <button mat-raised-button color="primary">Select File (With Error)</button>
   </fs-file>
 
-  <fs-file (select)="select($event,false,60)" multiple="true">
+  <fs-file (select)="select($event,false, 60)" multiple="true">
     <button mat-raised-button color="primary">Select File (Click to cancel upload)</button>
   </fs-file>
+
+  <fs-file (select)="select($event, false, 30)" multiple="true">
+    <button mat-raised-button color="primary">Select File (Server process for 30 seconds)</button>
+  </fs-file>  
 </div>
 
 <p>

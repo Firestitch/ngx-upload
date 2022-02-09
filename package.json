@@ -2,7 +2,7 @@
   "name": "@firestitch/upload",
   "title": "Upload",
   "description": "@firestitch/upload",
-  "version": "8.0.3",
+  "version": "8.0.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/Firestitch/ngx-upload"
