@@ -41,7 +41,7 @@ import { FsDateModule } from '@firestitch/date';
   ]
 })
 export class FsUploadModule {
-  static forRoot(config?: UploadConfig): ModuleWithProviders {
+  static forRoot(config?: UploadConfig): ModuleWithProviders<FsUploadModule> {
     return {
       ngModule: FsUploadModule,
        providers: [
