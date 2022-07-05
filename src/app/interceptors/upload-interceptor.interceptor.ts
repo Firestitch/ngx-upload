@@ -8,6 +8,7 @@ import {
   HttpInterceptor,
   HttpRequest
 } from '@angular/common/http';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
 import { Observable, Subject, throwError } from 'rxjs';
 import { catchError, takeUntil, tap, finalize } from 'rxjs/operators';
@@ -38,7 +39,7 @@ export class UploadInterceptor implements HttpInterceptor {
       upload = this.config.upload;
 
       if (req.headers.has('FsUpload')) {
-        upload = !!req.headers.get('FsUpload');
+        upload = coerceBooleanProperty(req.headers.get('FsUpload'));
       }
     }
 
