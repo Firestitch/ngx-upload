@@ -28,7 +28,7 @@
     "serve": "cd tools && npm run cli:serve"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~12.2.16",
+    "@angular-devkit/build-angular": "~15.0.4",
     "@angular-devkit/core": "^12.2.16",
     "@angular/animations": "^12.2.16",
     "@angular/cdk": "^12.2.13",
@@ -80,7 +80,7 @@
     "rxjs": "^6.5.3",
     "tslint": "~6.1.0",
     "typescript": "4.3.5",
-    "webpack": "^4.41.4",
+    "webpack": "^5.75.0",
     "webpack-dev-server": "^3.10.1",
     "zone.js": "~0.11.4"
   },
