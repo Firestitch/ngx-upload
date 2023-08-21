@@ -18,6 +18,7 @@ import { UploadFileStatus } from '../enums/upload-file-status';
 import { UploadFile } from '../classes/file';
 import { FS_UPLOAD_CONFIG} from '../consts/const';
 import { UploadConfig } from '../interfaces/upload-config';
+import { DisplayUploadStatus } from '../consts';
 
 
 @Injectable()
@@ -40,6 +41,10 @@ export class UploadInterceptor implements HttpInterceptor {
 
       if (req.headers.has('FsUpload')) {
         upload = coerceBooleanProperty(req.headers.get('FsUpload'));
+      }
+
+      if(req.context.get(DisplayUploadStatus) === false) {
+        upload = false;
       }
     }
 

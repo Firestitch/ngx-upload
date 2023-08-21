@@ -1,6 +1,8 @@
+import { HttpContext } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FsApi } from '@firestitch/api';
 import { FsMessage, MessageMode } from '@firestitch/message';
+import { DisplayUploadStatus } from '@firestitch/upload';
 
 @Component({
   selector: 'example',
@@ -29,13 +31,15 @@ export class ExampleComponent {
       };
 
       if (error) {
-        data.exception = 'Somethign bad happened and there is no way to fix it! Call 911!';
+        data.exception = 'Something bad happened and there is no way to fix it! Call 911!';
       }
 
       this.kbLoaded = 0;
       this.percent = 0;
 
-      this.fsApi.post(this.url, data, { headers: { FsUpload: 'true' } })
+      this.fsApi.post(this.url, data, {
+        context: new HttpContext().set(DisplayUploadStatus, true)  
+      })
         .subscribe(event => {
           this.fsMessage.success('Upload Successful');
           // if (event.type === HttpEventType.Sent) {

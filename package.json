@@ -2,7 +2,7 @@
   "name": "@firestitch/upload",
   "title": "Upload",
   "description": "@firestitch/upload",
-  "version": "12.0.2",
+  "version": "12.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/Firestitch/ngx-upload"
@@ -45,7 +45,7 @@
     "@angular/platform-browser-dynamic": "^12.2.16",
     "@angular/router": "^12.2.16",
     "@compodoc/compodoc": "^1.1.11",
-    "@firestitch/api": "^12.0.0",
+    "@firestitch/api": "^12.3.10",
     "@firestitch/autocomplete": "^12.0.0",
     "@firestitch/autocomplete-chips": "^12.0.0",
     "@firestitch/clear": "^12.0.0",
