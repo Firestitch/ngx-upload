@@ -53,11 +53,12 @@
         <mat-icon *ngIf="file.status===UploadFileStatus.Uploaded" class="uploaded">check_circle</mat-icon>
         <mat-icon *ngIf="file.status===UploadFileStatus.Failed" class="failed">error</mat-icon>
         <mat-icon *ngIf="file.status===UploadFileStatus.Cancelled" class="cancelled">report</mat-icon>
-        <a href="javascript:;"
-          *ngIf="file.status===UploadFileStatus.Uploading || file.status===UploadFileStatus.Processing"
-          (click)="cancel(file)"
-          class="cancel"
-          matTooltip="Cancel">
+        <a 
+            href="javascript:;"
+            *ngIf="file.status===UploadFileStatus.Uploading || file.status===UploadFileStatus.Processing"
+            (click)="cancel(file)"
+            class="cancel"
+            matTooltip="Cancel">
           <mat-icon>cancel</mat-icon>
         </a>
       </div>
