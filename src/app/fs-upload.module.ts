@@ -19,26 +19,21 @@ import { FsDateModule } from '@firestitch/date';
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-
-    MatDialogModule,
-    MatIconModule,
-    MatButtonModule,
-    MatTooltipModule,
-    MatProgressSpinnerModule,
-
-    FsDateModule,
-  ],
-  exports: [
-    FsUploadComponent
-  ],
-  entryComponents: [
-    FsUploadComponent
-  ],
-  declarations: [
-    FsUploadComponent,
-  ]
+    imports: [
+        CommonModule,
+        MatDialogModule,
+        MatIconModule,
+        MatButtonModule,
+        MatTooltipModule,
+        MatProgressSpinnerModule,
+        FsDateModule,
+    ],
+    exports: [
+        FsUploadComponent
+    ],
+    declarations: [
+        FsUploadComponent,
+    ]
 })
 export class FsUploadModule {
   static forRoot(config?: UploadConfig): ModuleWithProviders<FsUploadModule> {

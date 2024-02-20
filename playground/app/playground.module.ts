@@ -22,27 +22,26 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  bootstrap: [AppComponent],
-  imports: [
-    BrowserModule,
-    FsUploadModule.forRoot({}),
-    BrowserAnimationsModule,
-    AppMaterialModule,
-    FormsModule,
-    FsApiModule.forRoot({ maxFileConnections: 3 }),
-    FsExampleModule.forRoot({ iframeObserveBody: true }),
-    FsMessageModule.forRoot(),
-    ToastrModule.forRoot(),
-    FsFileModule.forRoot(),
-    RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' }),
-  ],
-  entryComponents: [],
-  declarations: [
-    AppComponent,
-    ExamplesComponent,
-    ExampleComponent
-  ],
-  providers: [],
+    bootstrap: [AppComponent],
+    imports: [
+        BrowserModule,
+        FsUploadModule.forRoot({}),
+        BrowserAnimationsModule,
+        AppMaterialModule,
+        FormsModule,
+        FsApiModule.forRoot({ maxFileConnections: 3 }),
+        FsExampleModule.forRoot({ iframeObserveBody: true }),
+        FsMessageModule.forRoot(),
+        ToastrModule.forRoot(),
+        FsFileModule.forRoot(),
+        RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' }),
+    ],
+    declarations: [
+        AppComponent,
+        ExamplesComponent,
+        ExampleComponent
+    ],
+    providers: []
 })
 export class PlaygroundModule {
 }
