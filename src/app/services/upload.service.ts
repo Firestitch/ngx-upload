@@ -1,7 +1,9 @@
-import { remove } from 'lodash-es';
-import { UploadFile } from './../classes/file';
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+
+import { Observable, Subject } from 'rxjs';
+
+
+import { UploadFile } from './../classes/file';
 
 
 @Injectable()
@@ -10,8 +12,8 @@ export class UploadService {
   private _files: UploadFile[] = [];
   private _filesAdded$ = new Subject<UploadFile[]>();
 
-  public get filesAdded$() {
-    return this._filesAdded$;
+  public get filesAdded$(): Observable<UploadFile[]> {
+    return this._filesAdded$.asObservable();
   }
 
   public get files(): UploadFile[] {
@@ -23,9 +25,8 @@ export class UploadService {
     this._files.push(...files);
   }
 
-  public removeFiles(files) {
-    remove(this._files, (file) => {
-       return files.indexOf(file) >= 0;
-    });
+  public removeCompletedFiles() {
+    this._files = this.files
+      .filter((uploadFile) => !uploadFile.isCompleted());
   }
 }

@@ -1,25 +1,27 @@
-import { Subject } from 'rxjs';
-import { UploadFileStatus } from '../enums/upload-file-status';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+
 import { HttpProgressEvent } from '@angular/common/http';
+
+import { UploadFileStatus } from '../enums/upload-file-status';
 
 
 export class UploadFile {
 
-  public file: File;
-  public cancelSubject: Subject<void>;
-  public statusSubject = new Subject();
+  public file: File;  
   public percent = 0;
   public loaded = 0;
   public message = '';
   public fileType = 'generic';
   public icon = 'insert_drive_file';
-  public status = UploadFileStatus.Queued;
   public started: Date = null;
   public completed: Date = null;
 
-  constructor(file: File, cancelSubject) {
+  private _statusSubject = new BehaviorSubject<UploadFileStatus>(UploadFileStatus.Queued);
+  private _cancelSubject: Subject<void>;
+
+  constructor(file: File, cancelSubject: Subject<any>) {
     this.file = file;
-    this.cancelSubject = cancelSubject;
+    this._cancelSubject = cancelSubject;
 
     if (file.type.match(/^image/)) {
       this.icon = 'insert_photo';
@@ -32,27 +34,34 @@ export class UploadFile {
     }
   }
 
+  public get status$(): Observable<UploadFileStatus> {
+    return this._statusSubject.asObservable();
+  }
+
+  public get status(): UploadFileStatus {
+    return this._statusSubject.getValue();
+  }
+
   public setStatus(status: UploadFileStatus, message: string) {
     if (status === UploadFileStatus.Uploading && !this.started) {
       this.started = new Date();
     }
 
-    this.status = status;
     this.message = message;
-    this.statusSubject.next(status);
+    this._statusSubject.next(status);
 
     switch (status) {
       case UploadFileStatus.Cancelled:
       case UploadFileStatus.Failed:
       case UploadFileStatus.Uploaded:
         this.completed = new Date();
-        this.statusSubject.complete();
+        this._statusSubject.complete();
         break;
     }
   }
 
   public cancel() {
-    this.cancelSubject.next();
+    this._cancelSubject.next();
     this.setStatus(UploadFileStatus.Cancelled, 'Upload was cancelled');
   }
 
@@ -62,6 +71,7 @@ export class UploadFile {
 
   public get elapsedSeconds() {
     const end = this.completed ? this.completed : new Date();
+
     return (end.getTime() - this.started.getTime()) / 1000;
   }
 

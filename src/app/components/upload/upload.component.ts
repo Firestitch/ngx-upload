@@ -3,17 +3,18 @@ import {
   ChangeDetectorRef,
   Component,
   OnDestroy,
+  OnInit,
 } from '@angular/core';
 
 import { MatDialogRef } from '@angular/material/dialog';
 
-import { Subject, interval } from 'rxjs';
+import { interval, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { UploadFileStatus } from '../../enums/upload-file-status';
 
 import { UploadFile } from './../../classes/file';
-import { UploadService } from './../../services/upload.service';
+import { UploadService } from './../../services';
 
 @Component({
   selector: 'fs-component',
@@ -21,7 +22,7 @@ import { UploadService } from './../../services/upload.service';
   styleUrls: ['./upload.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FsUploadComponent implements OnDestroy {
+export class FsUploadComponent implements OnDestroy, OnInit {
 
   public files: UploadFile[] = [];
   public failed = 0;
@@ -45,7 +46,12 @@ export class FsUploadComponent implements OnDestroy {
     private _uploadService: UploadService,
     private _cdRef: ChangeDetectorRef,
   ) {
+  }
+ 
+  public ngOnInit(): void {
+    this._uploadService.removeCompletedFiles();
     this._addFiles(this._uploadService.files);
+
     this._uploadService.filesAdded$
       .pipe(
         takeUntil(this._destroy$),
@@ -76,11 +82,6 @@ export class FsUploadComponent implements OnDestroy {
       });
   }
 
-  public ngOnDestroy() {
-    this._destroy$.next();
-    this._destroy$.complete();
-  }
-
   public cancel(file) {
     file.cancel();
     this._update();
@@ -89,6 +90,11 @@ export class FsUploadComponent implements OnDestroy {
 
   public get running() {
     return this.uploading || this.processing || this.queued;
+  }
+
+  public ngOnDestroy() {
+    this._destroy$.next();
+    this._destroy$.complete();
   }
 
   private _addFiles(files: UploadFile[]) {
@@ -119,7 +125,7 @@ export class FsUploadComponent implements OnDestroy {
   }
 
   private _processFile(file: UploadFile) {
-    file.statusSubject
+    file.status$
       .pipe(
         takeUntil(this._destroy$),
       )
@@ -189,6 +195,6 @@ export class FsUploadComponent implements OnDestroy {
   private _startClosing() {
     const lastFile = this.files[this.files.length - 1];
     this.closingSeconds = lastFile?.status === UploadFileStatus.Failed ?
-      20 : 0;
+      20 : 3;
   }
 }
