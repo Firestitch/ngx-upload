@@ -195,6 +195,6 @@ export class FsUploadComponent implements OnDestroy, OnInit {
   private _startClosing() {
     const lastFile = this.files[this.files.length - 1];
     this.closingSeconds = lastFile?.status === UploadFileStatus.Failed ?
-      20 : 3;
+      20 : 0;
   }
 }
