@@ -1,4 +1,4 @@
-import { Injectable, Injector } from '@angular/core';
+import { Injectable, Injector, NgZone } from '@angular/core';
 
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
@@ -70,8 +70,11 @@ export class UploadInterceptor implements HttpInterceptor {
       }
     }
 
-    this._uploadService.addFiles(files);
-    this._uploadDialog.open();
+    this._injector.get(NgZone)
+      .runOutsideAngular(() => {
+        this._uploadService.addFiles(files);
+        this._uploadDialog.open();
+      });
 
     return r.pipe(
       tap((event: HttpEvent<any>) => {
