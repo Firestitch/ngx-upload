@@ -57,7 +57,8 @@ export class FsUploadComponent implements OnDestroy, OnInit {
         takeUntil(this._destroy$),
       )
       .subscribe((files) => {
-        this._addFiles(files);
+        this._addFiles(files);        
+        this._cdRef.markForCheck();
       });
 
     interval(1000)
@@ -67,18 +68,18 @@ export class FsUploadComponent implements OnDestroy, OnInit {
       .subscribe(() => {
         if (this.uploading) {
           this._calcRemaning();
-          this._cdRef.markForCheck();
         }
 
         if (!this.running) {
           this.closingSeconds--;
-          this._cdRef.markForCheck();
 
           if (this.closingSeconds <= 0) {
             this._clearClosing();
             this._dialogRef.close();
           }
         }
+
+        this._cdRef.markForCheck();
       });
   }
 
@@ -98,7 +99,10 @@ export class FsUploadComponent implements OnDestroy, OnInit {
   }
 
   private _addFiles(files: UploadFile[]) {
-    this.files.push(...files);
+    this.files = [
+      ...this.files,
+      ...files,
+    ];
 
     this.uploadTotalBytes += files
       .reduce((total: number, file) => {
@@ -109,8 +113,6 @@ export class FsUploadComponent implements OnDestroy, OnInit {
     files.forEach((file: UploadFile) => {
       this._processFile(file);
     });
-
-    this._cdRef.markForCheck();
   }
 
   private _calcRemaning() {
