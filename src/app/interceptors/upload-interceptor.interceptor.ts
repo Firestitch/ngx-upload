@@ -71,7 +71,7 @@ export class UploadInterceptor implements HttpInterceptor {
     }
 
     this._injector.get(NgZone)
-      .runOutsideAngular(() => {
+      .run(() => {
         this._uploadService.addFiles(files);
         this._uploadDialog.open();
       });
