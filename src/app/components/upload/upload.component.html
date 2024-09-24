@@ -21,7 +21,12 @@
     </div>
     <div class="close">
       <span *ngIf="closingSeconds > 0" class="close-seconds">Closing in {{closingSeconds}}</span>
-      <button mat-icon-button class="clear" [mat-dialog-close]="true" type="button" tabindex="-1">
+      <button 
+          mat-icon-button 
+          class="clear" 
+          [mat-dialog-close]="true" 
+          type="button" 
+          tabindex="-1">
         <mat-icon>clear</mat-icon>
       </button>
     </div>
@@ -29,40 +34,41 @@
 </div>
 <mat-dialog-content>
   <div class="files">
-    <div *ngFor="let file of files" class="file" [ngClass]="file.status">
-      <mat-icon class="icon" [ngClass]="'file-' + file.fileType">{{file.icon}}</mat-icon>
-      <div class="name">
-        {{file.file.name}}
-      </div>
-      <span class="message">{{file.message}}</span>
-      <div class="status">
-        <ng-container *ngIf="file.status===UploadFileStatus.Uploading">
+    <ng-container *ngFor="let file of files">
+      <div class="file" [ngClass]="file.status">
+        <mat-icon class="icon" [ngClass]="'file-' + file.fileType">{{file.icon}}</mat-icon>
+        <div class="name">
+          {{file.file.name}}
+        </div>
+        <span class="message">{{file.message}}</span>
+        <div class="status">
+          <ng-container *ngIf="file.status===UploadFileStatus.Uploading">
+            <mat-progress-spinner
+              *ngIf="file.status===UploadFileStatus.Uploading"
+              mode="determinate"
+              [value]="file.percent"
+              diameter="25"
+              class="uploading"></mat-progress-spinner>
+
+          </ng-container>
           <mat-progress-spinner
-            *ngIf="file.status===UploadFileStatus.Uploading"
-            mode="determinate"
-            [value]="file.percent"
+            *ngIf="file.status===UploadFileStatus.Processing"
+            mode="indeterminate"
             diameter="25"
-            class="uploading"></mat-progress-spinner>
-
-        </ng-container>
-        <mat-progress-spinner
-          *ngIf="file.status===UploadFileStatus.Processing"
-          mode="indeterminate"
-          diameter="25"
-          class="processing"></mat-progress-spinner>
-        <mat-icon *ngIf="file.status===UploadFileStatus.Uploaded" class="uploaded">check_circle</mat-icon>
-        <mat-icon *ngIf="file.status===UploadFileStatus.Failed" class="failed">error</mat-icon>
-        <mat-icon *ngIf="file.status===UploadFileStatus.Cancelled" class="cancelled">report</mat-icon>
-        <a 
-            href="javascript:;"
-            *ngIf="file.status===UploadFileStatus.Uploading || file.status===UploadFileStatus.Processing"
-            (click)="cancel(file)"
-            class="cancel"
-            matTooltip="Cancel">
-          <mat-icon>cancel</mat-icon>
-        </a>
+            class="processing"></mat-progress-spinner>
+          <mat-icon *ngIf="file.status===UploadFileStatus.Uploaded" class="uploaded">check_circle</mat-icon>
+          <mat-icon *ngIf="file.status===UploadFileStatus.Failed" class="failed">error</mat-icon>
+          <mat-icon *ngIf="file.status===UploadFileStatus.Cancelled" class="cancelled">report</mat-icon>
+          <a 
+              href="javascript:;"
+              *ngIf="file.status===UploadFileStatus.Uploading || file.status===UploadFileStatus.Processing"
+              (click)="cancel(file)"
+              class="cancel"
+              matTooltip="Cancel">
+            <mat-icon>cancel</mat-icon>
+          </a>
+        </div>
       </div>
-    </div>
+    </ng-container>
   </div>
-
 </mat-dialog-content>
