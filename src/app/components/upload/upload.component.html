@@ -44,29 +44,35 @@
         <div class="status">
           <ng-container *ngIf="file.status===UploadFileStatus.Uploading">
             <mat-progress-spinner
-              *ngIf="file.status===UploadFileStatus.Uploading"
-              mode="determinate"
+              [mode]="file.percent ? 'determinate' : 'indeterminate'"
               [value]="file.percent"
-              diameter="25"
-              class="uploading"></mat-progress-spinner>
-
+              diameter="25">
+            </mat-progress-spinner>
           </ng-container>
-          <mat-progress-spinner
-            *ngIf="file.status===UploadFileStatus.Processing"
-            mode="indeterminate"
-            diameter="25"
-            class="processing"></mat-progress-spinner>
+          <ng-container *ngIf="file.status===UploadFileStatus.Queued">
+            <mat-progress-spinner            
+              mode="indeterminate"
+              diameter="25">
+            </mat-progress-spinner>
+          </ng-container>
+          <ng-container *ngIf="file.status===UploadFileStatus.Processing">
+            <mat-progress-spinner            
+              mode="determinate"
+              [value]="100"
+              diameter="25">
+            </mat-progress-spinner>
+          </ng-container>
           <mat-icon *ngIf="file.status===UploadFileStatus.Uploaded" class="uploaded">check_circle</mat-icon>
           <mat-icon *ngIf="file.status===UploadFileStatus.Failed" class="failed">error</mat-icon>
           <mat-icon *ngIf="file.status===UploadFileStatus.Cancelled" class="cancelled">report</mat-icon>
-          <a 
-              href="javascript:;"
-              *ngIf="file.status===UploadFileStatus.Uploading || file.status===UploadFileStatus.Processing"
-              (click)="cancel(file)"
-              class="cancel"
-              matTooltip="Cancel">
-            <mat-icon>cancel</mat-icon>
-          </a>
+          <ng-container *ngIf="file.status===UploadFileStatus.Uploading || file.status===UploadFileStatus.Processing">
+            <a 
+                href="javascript:;"              
+                (click)="cancel(file)"
+                class="cancel">
+              <mat-icon>cancel</mat-icon>
+            </a>
+          </ng-container>
         </div>
       </div>
     </ng-container>

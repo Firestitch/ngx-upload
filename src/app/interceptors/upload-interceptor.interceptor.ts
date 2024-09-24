@@ -78,7 +78,6 @@ export class UploadInterceptor implements HttpInterceptor {
 
     return r.pipe(
       tap((event: HttpEvent<any>) => {
-
         switch (event.type) {
           case HttpEventType.Sent: {
             this._setFileStatus(files, UploadFileStatus.Uploading);
