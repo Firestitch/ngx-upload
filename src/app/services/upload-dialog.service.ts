@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Overlay } from '@angular/cdk/overlay';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 
 import { take } from 'rxjs/operators';
 

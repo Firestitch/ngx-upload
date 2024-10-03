@@ -6,7 +6,7 @@ import {
   OnInit,
 } from '@angular/core';
 
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 
 import { interval, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
