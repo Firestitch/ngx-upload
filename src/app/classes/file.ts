@@ -61,7 +61,7 @@ export class UploadFile {
   }
 
   public cancel() {
-    this._cancelSubject.next();
+    this._cancelSubject.next(null);
     this.setStatus(UploadFileStatus.Cancelled, 'Upload was cancelled');
   }
 
