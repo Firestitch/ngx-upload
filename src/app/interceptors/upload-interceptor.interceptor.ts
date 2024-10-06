@@ -5,13 +5,7 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Observable, Subject, throwError } from 'rxjs';
 import { catchError, finalize, takeUntil, tap } from 'rxjs/operators';
 
-import {
-  HttpEvent,
-  HttpEventType,
-  HttpHandler,
-  HttpInterceptor,
-  HttpRequest,
-} from '@angular/common/http';
+import { HttpEvent, HttpEventType, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 
 import { UploadFile } from '../classes/file';
 import { DisplayUploadStatus } from '../consts';

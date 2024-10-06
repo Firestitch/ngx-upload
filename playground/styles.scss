@@ -5,6 +5,6 @@
 @import '@firestitch/file/styles.scss';
 
 
-@include fs-file(mat.$blue-palette);
+@include fs-file(mat.$m2-blue-palette);
 @include fs-style.core();
 @include mat.core();
