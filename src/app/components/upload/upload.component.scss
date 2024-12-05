@@ -52,10 +52,25 @@
 
 .status {
   font-size: 80%;
+
   .counts {
     span + span:before {
       content: ', ';
     }
+  }
+}
+
+@keyframes processing-rotate {
+  0% {
+    transform: rotateY(0);
+  }
+
+  50% {
+    transform: rotateY(180deg);
+  }
+
+  100% {
+    transform: rotateY(0deg);
   }
 }
 
@@ -64,6 +79,10 @@
   flex-direction: row;
   align-items: center;
   min-height: 40px;
+
+  .file-status {
+    position: relative;
+  }
 
   mat-icon {
     color: #8F8F8F;
@@ -112,15 +131,25 @@
     color: #e3801d;
   }
 
+  &.processing {
+    mat-progress-spinner {
+      display: flex;
+      animation: processing-rotate 1s both infinite;
+    }
+  }
+
   &.uploading,
   &.processing {
-    .status:hover {
+    .file-status:hover {
       .cancel {
+        position: absolute;
+        top: 1px;
+        right: 1px;
         display: flex;
       }
 
       mat-progress-spinner {
-        display: none;
+        visibility: hidden;
       }
     }
   }

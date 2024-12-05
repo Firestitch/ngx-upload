@@ -8,7 +8,7 @@ import { UploadFileStatus } from '../enums/upload-file-status';
 export class UploadFile {
 
   public file: File;  
-  public percent = 0;
+  public percent = 1;
   public loaded = 0;
   public message = '';
   public fileType = 'generic';
