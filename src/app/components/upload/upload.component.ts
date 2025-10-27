@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 
 import { MatDialogRef, MatDialogClose, MatDialogContent } from '@angular/material/dialog';
 
@@ -40,6 +34,10 @@ import { FsDateModule } from '@firestitch/date';
     ],
 })
 export class FsUploadComponent implements OnDestroy, OnInit {
+  private _dialogRef = inject<MatDialogRef<FsUploadComponent>>(MatDialogRef);
+  private _uploadService = inject(UploadService);
+  private _cdRef = inject(ChangeDetectorRef);
+
 
   public files: UploadFile[] = [];
   public failed = 0;
@@ -57,13 +55,6 @@ export class FsUploadComponent implements OnDestroy, OnInit {
   public bytesPerSecond: number[] = [];
 
   private _destroy$ = new Subject<void>();
-
-  constructor(
-    private _dialogRef: MatDialogRef<FsUploadComponent>,
-    private _uploadService: UploadService,
-    private _cdRef: ChangeDetectorRef,
-  ) {
-  }
  
   public ngOnInit(): void {
     this._uploadService.removeCompletedFiles();

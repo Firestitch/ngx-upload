@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { FsApi } from '@firestitch/api';
 import { FsMessage, MessageMode } from '@firestitch/message';
@@ -21,17 +21,14 @@ import { MatIcon } from '@angular/material/icon';
     ],
 })
 export class ExampleComponent {
+  private _api = inject(FsApi);
+  private _message = inject(FsMessage);
+
 
   public files = [];
   public kbLoaded = 0;
   public percent = 0;
   public url = 'https://specify.firestitch.dev/api/dummy/upload';
-
-  constructor(
-    private _api: FsApi,
-    private _message: FsMessage,
-  ) {
-  }
 
   public select(fsFiles, error?, sleep?) {
     this.files.push(...fsFiles);

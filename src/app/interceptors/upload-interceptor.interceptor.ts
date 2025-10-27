@@ -1,4 +1,4 @@
-import { Injectable, Injector, NgZone } from '@angular/core';
+import { Injectable, Injector, NgZone, inject } from '@angular/core';
 
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
@@ -19,14 +19,14 @@ import { UploadService } from './../services/upload.service';
 
 @Injectable()
 export class UploadInterceptor implements HttpInterceptor {
+  private _uploadDialog = inject(UploadDialog);
+  private _uploadService = inject(UploadService);
+  private _injector = inject(Injector);
+
   
   private _config: UploadConfig;
 
-  constructor(
-    private _uploadDialog: UploadDialog,
-    private _uploadService: UploadService,
-    private _injector: Injector,
-  ) {
+  constructor() {
     this._config = this._injector.get(FS_UPLOAD_CONFIG)();
   }
 

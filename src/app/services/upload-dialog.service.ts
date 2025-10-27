@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import { Overlay } from '@angular/cdk/overlay';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -10,13 +10,11 @@ import { FsUploadComponent } from '../components/upload';
 
 @Injectable()
 export class UploadDialog {
+  private _dialog = inject(MatDialog);
+  private _overlay = inject(Overlay);
+
 
   private _dialogRef: MatDialogRef<FsUploadComponent>;
-
-  constructor(
-    private _dialog: MatDialog,
-    private _overlay: Overlay,
-  ) { }
 
   public get dialogOpen():boolean {
     return !!this._dialogRef;
