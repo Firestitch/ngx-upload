@@ -6,45 +6,57 @@
       </h2>
       <div class="status">
         <span class="counts">
-          <ng-container *ngIf="uploading || processing || queued; else elseUploadingProcessing">
-            <span *ngIf="uploading + queued">
-              {{ uploading + queued }} Uploading
-            </span>
-            <span *ngIf="processing">
-              {{ processing }} Processing
-            </span>
-          </ng-container>
-          <ng-template #elseUploadingProcessing>
-            <span *ngIf="uploaded">
-              {{ uploaded }} Successfully Uploaded
-            </span>
-            <span *ngIf="failed">
-              {{ failed }} Failed
-            </span>
-            <span *ngIf="cancelled">
-              {{ cancelled }} Cancelled
-            </span>
-          </ng-template>
+          @if (uploading || processing || queued) {
+            @if (uploading + queued) {
+              <span>
+                {{ uploading + queued }} Uploading
+              </span>
+            }
+            @if (processing) {
+              <span>
+                {{ processing }} Processing
+              </span>
+            }
+          } @else {
+            @if (uploaded) {
+              <span>
+                {{ uploaded }} Successfully Uploaded
+              </span>
+            }
+            @if (failed) {
+              <span>
+                {{ failed }} Failed
+              </span>
+            }
+            @if (cancelled) {
+              <span>
+                {{ cancelled }} Cancelled
+              </span>
+            }
+          }
         </span>
-        <span
+        @if (remainingSeconds) {
+          <span
             class="remaining"
-            *ngIf="remainingSeconds">
-          , {{ remainingSeconds | fsDateDuration: { minutes: true, seconds: true} }} remaining
-        </span>
+            >
+            , {{ remainingSeconds | fsDateDuration: { minutes: true, seconds: true} }} remaining
+          </span>
+        }
       </div>
     </div>
     <div class="close">
-      <span
-          *ngIf="closingSeconds > 0"
+      @if (closingSeconds > 0) {
+        <span
           class="close-seconds">
-        Closing in {{ closingSeconds }}
-      </span>
+          Closing in {{ closingSeconds }}
+        </span>
+      }
       <button
-          mat-icon-button
-          class="clear"
-          [mat-dialog-close]="true"
-          type="button"
-          tabindex="-1">
+        mat-icon-button
+        class="clear"
+        [mat-dialog-close]="true"
+        type="button"
+        tabindex="-1">
         <mat-icon>
           clear
         </mat-icon>
@@ -54,13 +66,13 @@
 </div>
 <mat-dialog-content>
   <div class="files">
-    <ng-container *ngFor="let file of files">
+    @for (file of files; track file) {
       <div
-          class="file"
-          [ngClass]="file.status">
+        class="file"
+        [ngClass]="file.status">
         <mat-icon
-            class="icon"
-            [ngClass]="'file-' + file.fileType">
+          class="icon"
+          [ngClass]="'file-' + file.fileType">
           {{ file.icon }}
         </mat-icon>
         <div class="name">
@@ -70,53 +82,56 @@
           {{ file.message }}
         </span>
         <div class="file-status">
-          <ng-container *ngIf="file.status===UploadFileStatus.Uploading">
+          @if (file.status===UploadFileStatus.Uploading) {
             <mat-progress-spinner
               [mode]="file.percent ? 'determinate' : 'indeterminate'"
               [value]="file.percent"
               diameter="25">
             </mat-progress-spinner>
-          </ng-container>
-          <ng-container *ngIf="file.status===UploadFileStatus.Queued">
+          }
+          @if (file.status===UploadFileStatus.Queued) {
             <mat-progress-spinner
               mode="indeterminate"
               diameter="25">
             </mat-progress-spinner>
-          </ng-container>
-          <ng-container *ngIf="file.status===UploadFileStatus.Processing">
+          }
+          @if (file.status===UploadFileStatus.Processing) {
             <mat-progress-spinner
               mode="determinate"
               [value]="100"
               diameter="25">
             </mat-progress-spinner>
-          </ng-container>
-          <mat-icon
-              *ngIf="file.status===UploadFileStatus.Uploaded"
+          }
+          @if (file.status===UploadFileStatus.Uploaded) {
+            <mat-icon
               class="uploaded">
-            check_circle
-          </mat-icon>
-          <mat-icon
-              *ngIf="file.status===UploadFileStatus.Failed"
+              check_circle
+            </mat-icon>
+          }
+          @if (file.status===UploadFileStatus.Failed) {
+            <mat-icon
               class="failed">
-            error
-          </mat-icon>
-          <mat-icon
-              *ngIf="file.status===UploadFileStatus.Cancelled"
+              error
+            </mat-icon>
+          }
+          @if (file.status===UploadFileStatus.Cancelled) {
+            <mat-icon
               class="cancelled">
-            report
-          </mat-icon>
-          <ng-container *ngIf="file.status===UploadFileStatus.Uploading || file.status===UploadFileStatus.Processing">
+              report
+            </mat-icon>
+          }
+          @if (file.status===UploadFileStatus.Uploading || file.status===UploadFileStatus.Processing) {
             <a
-                href="javascript:;"
-                (click)="cancel(file)"
-                class="cancel">
+              href="javascript:;"
+              (click)="cancel(file)"
+              class="cancel">
               <mat-icon>
                 cancel
               </mat-icon>
             </a>
-          </ng-container>
+          }
         </div>
       </div>
-    </ng-container>
+    }
   </div>
 </mat-dialog-content>
