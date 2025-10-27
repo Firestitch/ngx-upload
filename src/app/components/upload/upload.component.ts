@@ -6,7 +6,7 @@ import {
   OnInit,
 } from '@angular/core';
 
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MatDialogClose, MatDialogContent } from '@angular/material/dialog';
 
 import { interval, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -15,12 +15,29 @@ import { UploadFileStatus } from '../../enums/upload-file-status';
 
 import { UploadFile } from './../../classes/file';
 import { UploadService } from './../../services';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { NgClass } from '@angular/common';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { FsDateModule } from '@firestitch/date';
 
 @Component({
-  selector: 'fs-component',
-  templateUrl: './upload.component.html',
-  styleUrls: ['./upload.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'fs-component',
+    templateUrl: './upload.component.html',
+    styleUrls: ['./upload.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        MatIconButton,
+        MatDialogClose,
+        MatIcon,
+        CdkScrollable,
+        MatDialogContent,
+        NgClass,
+        MatProgressSpinner,
+        FsDateModule,
+    ],
 })
 export class FsUploadComponent implements OnDestroy, OnInit {
 

@@ -5,11 +5,20 @@ import { FsMessage, MessageMode } from '@firestitch/message';
 import { DisplayUploadStatus } from '@firestitch/upload';
 
 import { HttpContext } from '@angular/common/http';
+import { FsFileModule } from '@firestitch/file';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
-  selector: 'example',
-  templateUrl: './example.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'example',
+    templateUrl: './example.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        FsFileModule,
+        MatButton,
+        MatIcon,
+    ],
 })
 export class ExampleComponent {
 

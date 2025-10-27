@@ -21,21 +21,19 @@ import { UploadService } from './services/upload.service';
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    MatDialogModule,
-    MatIconModule,
-    MatButtonModule,
-    MatTooltipModule,
-    MatProgressSpinnerModule,
-    FsDateModule,
-  ],
-  exports: [
-    FsUploadComponent,
-  ],
-  declarations: [
-    FsUploadComponent,
-  ],
+    imports: [
+        CommonModule,
+        MatDialogModule,
+        MatIconModule,
+        MatButtonModule,
+        MatTooltipModule,
+        MatProgressSpinnerModule,
+        FsDateModule,
+        FsUploadComponent,
+    ],
+    exports: [
+        FsUploadComponent,
+    ],
 })
 export class FsUploadModule {
   public static forRoot(config?: UploadConfig): ModuleWithProviders<FsUploadModule> {
